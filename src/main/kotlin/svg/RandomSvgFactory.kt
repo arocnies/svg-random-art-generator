@@ -3,12 +3,13 @@ package svg
 import color.RGBA
 import org.w3c.dom.svg.SVGSVGElement
 import kotlin.js.Math.random
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 object RandomSvgFactory {
     private var seed: RGBA = RGBA()
 
-    fun buildSvg(width: Int, height: Int, numOfShapes: Int, seed: RGBA): SVGSVGElement {
+    fun createSvg(width: Int, height: Int, numOfShapes: Int, seed: RGBA): SVGSVGElement {
         RandomSvgFactory.seed = seed
 
         return SvgBuilder.svg {
@@ -30,27 +31,31 @@ object RandomSvgFactory {
     }
 
     private fun SvgBuilder.randomRect() = rect(
-            x = (random() * width.toDouble()).roundToInt(),
-            y = (random() * height.toDouble()).roundToInt(),
-            width = (random() * width.toDouble()).roundToInt(),
-            height = (random() * height.toDouble()).roundToInt(),
+            x = getRandomX(),
+            y = getRandomY(),
+            width = getRandomLength(),
+            height = getRandomLength(),
             style = "fill: ${getRandomColor()}"
     )
 
     private fun SvgBuilder.randomCircle() = circle(
-            x = (random() * width.toDouble()).roundToInt(),
-            y = (random() * height.toDouble()).roundToInt(),
-            radius = (random() * (width.toDouble() / 3)).roundToInt(),
+            x = getRandomX(),
+            y = getRandomY(),
+            radius = getRandomLength() / 3,
             style = "fill: ${getRandomColor()}"
     )
 
     private fun SvgBuilder.randomPoly() = polygon(
             points = *arrayOf(
-                    (random() * width.toDouble()).roundToInt() * 2 to (random() * height.toDouble()).roundToInt() * 2,
-                    (random() * width.toDouble()).roundToInt() * 2 to (random() * height.toDouble()).roundToInt() * 2,
-                    (random() * width.toDouble()).roundToInt() * 2 to (random() * height.toDouble()).roundToInt() * 2),
+                    getRandomX() to getRandomY(),
+                    getRandomX() to getRandomY(),
+                    getRandomX() to getRandomY()),
             style = "fill: ${getRandomColor()}"
     )
+
+    private fun SvgBuilder.getRandomX() = (width * random()).roundToInt()
+    private fun SvgBuilder.getRandomY() = (height * random()).roundToInt()
+    private fun SvgBuilder.getRandomLength() = (max(width, height) * random()).roundToInt()
 
     private fun getRandomColor(): RGBA {
         val randomColor = RGBA(rand(127), rand(127), rand(127), random() / 2.0)

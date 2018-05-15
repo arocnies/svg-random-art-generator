@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
 
     svgGenForm.onGenerate = {
         svgContainer.clear()
-        val svg = RandomSvgFactory.buildSvg(width, height, numOfShapes, color)
+        val svg = RandomSvgFactory.createSvg(width, height, numOfShapes, color)
         svg.setStyleCentered()
         svgContainer.appendChild(svg)
     }
